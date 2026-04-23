@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>ระบบแสดงผลการเข้าร่วมกิจกรรม</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Prompt', sans-serif; background-color: #f3f4f6; }
+    /* ซ่อน Loader เบื้องต้น */
+    #loader { display: flex; }
+    #content { display: none; }
+  </style>
+</head>
+<body class="text-gray-800 antialiased p-4 md:p-8">
+
+  <div id="loader" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex-col justify-center items-center">
+    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
+    <p class="mt-4 text-lg font-medium text-gray-600">กำลังโหลดข้อมูล...</p>
+  </div>
+
+  <div id="content" class="max-w-7xl mx-auto">
+    
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">ข้อมูลการเข้าร่วมกิจกรรม</h1>
+      <p class="text-gray-500 text-sm">ค้นหาและกรองข้อมูลนักเรียนได้แบบ Real-time</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm p-6 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+      
+      <div class="col-span-1 md:col-span-1">
+        <label class="block text-sm font-medium text-gray-700 mb-1">ค้นหา (ID, ชื่อ, นามสกุล)</label>
+        <input type="text" id="searchInput" placeholder="พิมพ์เพื่อค้นหา..." 
+               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">สถาบัน/โรงเรียน</label>
+        <select id="schoolFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">ทั้งหมด</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">เพศ</label>
+        <select id="genderFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">ทั้งหมด</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">กิจกรรมที่เข้าร่วม</label>
+        <select id="activityFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">ทั้งหมด</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ชื่อ - นามสกุล</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">สถาบัน</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">เพศ</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">กิจกรรม (Tags)</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+            </tbody>
+        </table>
+      </div>
+      
+      <div id="noDataMsg" class="hidden p-8 text-center text-gray-500">
+        ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+// นำ URL ของ Web App ที่ได้จากขั้นตอนที่ 1 มาใส่ที่นี่
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwEOLzDUROQRmzVxTP4oE_cYO1hbg83Z52Yg7X_lyBpTpdYng7gDJzla_EvKUfbizEkYQ/exec"; 
+    
+    let studentsData = [];
+
+    // เมื่อโหลดหน้าเว็บเสร็จ ให้ใช้ fetch ดึงข้อมูลแทน google.script.run
+    window.onload = async function() {
+      try {
+        const response = await fetch(GAS_API_URL);
+        
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        const data = await response.json();
+        initApp(data);
+      } catch (error) {
+        showError(error);
+      }
+    };
+
+    /**
+     * ฟังก์ชัน initApp เปลี่ยนมารับ Object โดยตรง (ไม่ต้อง JSON.parse แล้ว)
+     */
+    function initApp(data) {
+      try {
+        studentsData = data; // ใช้ข้อมูลที่ fetch มาได้เลย
+        
+        populateDropdowns();
+        renderTable(studentsData);
+        
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('schoolFilter').addEventListener('change', applyFilters);
+        document.getElementById('genderFilter').addEventListener('change', applyFilters);
+        document.getElementById('activityFilter').addEventListener('change', applyFilters);
+
+        document.getElementById('loader').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+
+      } catch (e) {
+        showError(e);
+      }
+    }
+    /**
+     * ดึงค่าที่ไม่ซ้ำกันสำหรับสร้างตัวเลือกใน Dropdown Filters
+     */
+    function populateDropdowns() {
+      const schools = new Set();
+      const genders = new Set();
+      const activities = new Set();
+
+      studentsData.forEach(student => {
+        if(student.school) schools.add(student.school);
+        if(student.gender) genders.add(student.gender);
+        student.activities.forEach(act => activities.add(act));
+      });
+
+      appendOptions('schoolFilter', Array.from(schools).sort());
+      appendOptions('genderFilter', Array.from(genders).sort());
+      appendOptions('activityFilter', Array.from(activities).sort());
+    }
+
+    // ฟังก์ชันช่วยสร้าง option ให้ dropdown
+    function appendOptions(elementId, dataArray) {
+      const select = document.getElementById(elementId);
+      dataArray.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item;
+        option.textContent = item;
+        select.appendChild(option);
+      });
+    }
+
+    /**
+     * ฟังก์ชันหลักในการกรองข้อมูล Client-side
+     */
+    function applyFilters() {
+      const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+      const schoolVal = document.getElementById('schoolFilter').value;
+      const genderVal = document.getElementById('genderFilter').value;
+      const activityVal = document.getElementById('activityFilter').value;
+
+      const filteredData = studentsData.filter(student => {
+        // 1. ตรวจสอบการค้นหา (ID, ชื่อ, นามสกุล)
+        const matchSearch = 
+          student.id.toLowerCase().includes(searchText) ||
+          student.firstName.toLowerCase().includes(searchText) ||
+          student.lastName.toLowerCase().includes(searchText);
+
+        // 2. ตรวจสอบเงื่อนไข Dropdown (ถ้ามีค่าให้เทียบ ถ้าไม่เลือก(ว่าง)ให้ผ่าน)
+        const matchSchool = schoolVal === "" || student.school === schoolVal;
+        const matchGender = genderVal === "" || student.gender === genderVal;
+        const matchActivity = activityVal === "" || student.activities.includes(activityVal);
+
+        // ต้องผ่านเงื่อนไขทั้งหมดถึงจะแสดงผล
+        return matchSearch && matchSchool && matchGender && matchActivity;
+      });
+
+      renderTable(filteredData);
+    }
+
+    /**
+     * นำข้อมูลมาสร้างเป็นตาราง (Table Rows)
+     */
+    function renderTable(data) {
+      const tbody = document.getElementById('tableBody');
+      const noDataMsg = document.getElementById('noDataMsg');
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        noDataMsg.classList.remove('hidden');
+        return;
+      } else {
+        noDataMsg.classList.add('hidden');
+      }
+
+      data.forEach(student => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-gray-50 transition-colors";
+
+        // สร้าง Tags สำหรับกิจกรรม
+        let tagsHtml = student.activities.map(act => 
+          `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full border border-blue-200 mr-1 mb-1 shadow-sm whitespace-nowrap">${act}</span>`
+        ).join('');
+
+        if(!tagsHtml) tagsHtml = '<span class="text-gray-400 text-xs italic">ไม่มีกิจกรรม</span>';
+
+        tr.innerHTML = `
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${student.id}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.firstName} ${student.lastName}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${student.school}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${student.gender}</td>
+          <td class="px-6 py-4 text-sm text-gray-600 flex flex-wrap gap-1">${tagsHtml}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /**
+     * จัดการเมื่อเกิด Error
+     */
+    function showError(error) {
+      alert("เกิดข้อผิดพลาดในการดึงข้อมูล: " + error);
+      document.getElementById('loader').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
