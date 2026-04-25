@@ -2,229 +2,200 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>ระบบแสดงผลการเข้าร่วมกิจกรรม</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบข้อมูลกิจกรรมนักเรียน</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Prompt', sans-serif; background-color: #f3f4f6; }
-    /* ซ่อน Loader เบื้องต้น */
-    #loader { display: flex; }
-    #content { display: none; }
+    body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; }
+    .nav-active { border-bottom: 3px solid #3b82f6; color: #1d4ed8; }
+    iframe { width: 100% !important; border-radius: 0.5rem; height: 300px; }
   </style>
 </head>
-<body class="text-gray-800 antialiased p-4 md:p-8">
+<body>
 
-  <div id="loader" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex-col justify-center items-center">
-    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-solid"></div>
-    <p class="mt-4 text-lg font-medium text-gray-600">กำลังโหลดข้อมูล...</p>
+  <div id="loader" class="fixed inset-0 bg-white z-50 flex flex-col justify-center items-center">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    <p class="mt-4 text-gray-600">กำลังโหลดข้อมูลระบบ...</p>
   </div>
 
-  <div id="content" class="max-w-7xl mx-auto">
+  <nav class="bg-white shadow-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex justify-between h-16">
+        <div class="flex space-x-8">
+          <div class="flex-shrink-0 flex items-center font-bold text-blue-600 text-xl">ACTIVITY-SYS</div>
+          <div class="hidden md:flex space-x-8 items-center">
+            <button onclick="switchView('home')" id="nav-home" class="nav-active px-1 pt-1 text-sm font-medium">รายชื่อนักเรียน</button>
+            <button onclick="switchView('activities')" id="nav-activities" class="text-gray-500 hover:text-gray-700 px-1 pt-1 text-sm font-medium">รายละเอียดกิจกรรม</button>
+            <button onclick="switchView('schedule')" id="nav-schedule" class="text-gray-500 hover:text-gray-700 px-1 pt-1 text-sm font-medium">กำหนดการ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     
-    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-      <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">ข้อมูลการเข้าร่วมกิจกรรม</h1>
-      <p class="text-gray-500 text-sm">ค้นหาและกรองข้อมูลนักเรียนได้แบบ Real-time</p>
-    </div>
-
-    <div class="bg-white rounded-xl shadow-sm p-6 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-      
-      <div class="col-span-1 md:col-span-1">
-        <label class="block text-sm font-medium text-gray-700 mb-1">ค้นหา (ID, ชื่อ, นามสกุล)</label>
-        <input type="text" id="searchInput" placeholder="พิมพ์เพื่อค้นหา..." 
-               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+    <div id="view-home" class="view-section">
+      <div class="bg-white p-6 rounded-xl shadow-sm mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+        <input type="text" id="search" placeholder="ค้นหาชื่อ/ID..." oninput="filterStudents()" class="border p-2 rounded-lg w-full">
+        <select id="f-school" onchange="filterStudents()" class="border p-2 rounded-lg"><option value="">ทุกสถาบัน</option></select>
+        <select id="f-activity" onchange="filterStudents()" class="border p-2 rounded-lg"><option value="">ทุกกิจกรรม</option></select>
       </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">สถาบัน/โรงเรียน</label>
-        <select id="schoolFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="">ทั้งหมด</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">เพศ</label>
-        <select id="genderFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="">ทั้งหมด</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">กิจกรรมที่เข้าร่วม</label>
-        <select id="activityFilter" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="">ทั้งหมด</option>
-        </select>
-      </div>
-
-    </div>
-
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-      <div class="overflow-x-auto">
+      <div class="bg-white shadow overflow-hidden rounded-xl">
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ชื่อ - นามสกุล</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">สถาบัน</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">เพศ</th>
-              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">กิจกรรม (Tags)</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ชื่อ-นามสกุล</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">กิจกรรมที่เข้าร่วม</th>
             </tr>
           </thead>
-          <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
-            </tbody>
+          <tbody id="student-table" class="divide-y divide-gray-200 bg-white"></tbody>
         </table>
-      </div>
-      
-      <div id="noDataMsg" class="hidden p-8 text-center text-gray-500">
-        ไม่พบข้อมูลที่ตรงกับเงื่อนไขการค้นหา
       </div>
     </div>
 
-  </div>
+    <div id="view-activities" class="view-section hidden">
+      <div id="activity-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    </div>
+
+    <div id="view-schedule" class="view-section hidden">
+      <div class="bg-white shadow rounded-xl overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-blue-600 text-white">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase">วัน/วันที่</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase">เวลา</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase">กิจกรรม</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase">สถานที่</th>
+            </tr>
+          </thead>
+          <tbody id="schedule-table" class="divide-y divide-gray-200 bg-white"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="modal-student" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+        <div class="flex justify-between items-start mb-4">
+          <h2 id="m-student-name" class="text-2xl font-bold"></h2>
+          <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+        </div>
+        <div id="m-student-info" class="mb-6 text-gray-600"></div>
+        <h3 class="font-bold border-b pb-2 mb-4">รายละเอียดกิจกรรมที่เข้าร่วม</h3>
+        <div id="m-student-activities" class="space-y-4"></div>
+      </div>
+    </div>
+
+  </main>
 
   <script>
-// นำ URL ของ Web App ที่ได้จากขั้นตอนที่ 1 มาใส่ที่นี่
-    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbwEOLzDUROQRmzVxTP4oE_cYO1hbg83Z52Yg7X_lyBpTpdYng7gDJzla_EvKUfbizEkYQ/exec"; 
-    
-    let studentsData = [];
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxFWwG2bSzKPJVAn7JbM8qHGahVo2BnNv2NlUneqixV6Y_rAKt_z_MdYwdxafvIMZyP7g/exec";
+    let appData = { students: [], activities: [], schedule: [] };
 
-    // เมื่อโหลดหน้าเว็บเสร็จ ให้ใช้ fetch ดึงข้อมูลแทน google.script.run
-    window.onload = async function() {
+    window.onload = async () => {
       try {
-        const response = await fetch(GAS_API_URL);
-        
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        const data = await response.json();
-        initApp(data);
-      } catch (error) {
-        showError(error);
-      }
+        const res = await fetch(GAS_URL);
+        appData = await res.json();
+        initUI();
+        document.getElementById('loader').style.display = 'none';
+      } catch (e) { alert("โหลดข้อมูลไม่สำเร็จ: " + e); }
     };
 
-    /**
-     * ฟังก์ชัน initApp เปลี่ยนมารับ Object โดยตรง (ไม่ต้อง JSON.parse แล้ว)
-     */
-    function initApp(data) {
-      try {
-        studentsData = data; // ใช้ข้อมูลที่ fetch มาได้เลย
-        
-        populateDropdowns();
-        renderTable(studentsData);
-        
-        document.getElementById('searchInput').addEventListener('input', applyFilters);
-        document.getElementById('schoolFilter').addEventListener('change', applyFilters);
-        document.getElementById('genderFilter').addEventListener('change', applyFilters);
-        document.getElementById('activityFilter').addEventListener('change', applyFilters);
-
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('content').style.display = 'block';
-
-      } catch (e) {
-        showError(e);
-      }
+    function initUI() {
+      // เติมตัวเลือกใน Dropdowns
+      const schools = [...new Set(appData.students.map(s => s.school))];
+      const acts = appData.activities.map(a => a.กิจกรรม);
+      
+      schools.forEach(s => document.getElementById('f-school').innerHTML += `<option value="${s}">${s}</option>`);
+      acts.forEach(a => document.getElementById('f-activity').innerHTML += `<option value="${a}">${a}</option>`);
+      
+      renderStudents(appData.students);
+      renderActivities();
+      renderSchedule();
     }
-    /**
-     * ดึงค่าที่ไม่ซ้ำกันสำหรับสร้างตัวเลือกใน Dropdown Filters
-     */
-    function populateDropdowns() {
-      const schools = new Set();
-      const genders = new Set();
-      const activities = new Set();
 
-      studentsData.forEach(student => {
-        if(student.school) schools.add(student.school);
-        if(student.gender) genders.add(student.gender);
-        student.activities.forEach(act => activities.add(act));
+    function switchView(view) {
+      document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
+      document.getElementById(`view-${view}`).classList.remove('hidden');
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active', 'text-blue-600'));
+      document.getElementById(`nav-${view}`).classList.add('nav-active');
+    }
+
+    function renderStudents(data) {
+      const tbody = document.getElementById('student-table');
+      tbody.innerHTML = data.map(s => `
+        <tr class="hover:bg-blue-50 cursor-pointer transition" onclick="openStudentDetail('${s.id}')">
+          <td class="px-6 py-4 text-sm font-medium text-gray-900">${s.id}</td>
+          <td class="px-6 py-4 text-sm text-gray-700">${s.firstName} ${s.lastName}</td>
+          <td class="px-6 py-4 flex flex-wrap gap-1">
+            ${s.activities.map(a => `<span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full">${a}</span>`).join('')}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterStudents() {
+      const q = document.getElementById('search').value.toLowerCase();
+      const sch = document.getElementById('f-school').value;
+      const act = document.getElementById('f-activity').value;
+
+      const filtered = appData.students.filter(s => {
+        const mSearch = s.firstName.toLowerCase().includes(q) || s.lastName.toLowerCase().includes(q) || s.id.includes(q);
+        const mSchool = !sch || s.school === sch;
+        const mAct = !act || s.activities.includes(act);
+        return mSearch && mSchool && mAct;
       });
-
-      appendOptions('schoolFilter', Array.from(schools).sort());
-      appendOptions('genderFilter', Array.from(genders).sort());
-      appendOptions('activityFilter', Array.from(activities).sort());
+      renderStudents(filtered);
     }
 
-    // ฟังก์ชันช่วยสร้าง option ให้ dropdown
-    function appendOptions(elementId, dataArray) {
-      const select = document.getElementById(elementId);
-      dataArray.forEach(item => {
-        const option = document.createElement('option');
-        option.value = item;
-        option.textContent = item;
-        select.appendChild(option);
-      });
+    function renderActivities() {
+      document.getElementById('activity-list').innerHTML = appData.activities.map(a => `
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+          <h3 class="text-xl font-bold text-blue-600 mb-2">${a.กิจกรรม}</h3>
+          <p class="text-gray-600 text-sm mb-4">${a.รายละเอีอด}</p>
+          <div class="text-xs text-gray-500 space-y-1 mb-4">
+            <p><strong>วันที่:</strong> ${a.วันที่} | <strong>เวลา:</strong> ${a.เวลา}</p>
+            <p><strong>สถานที่:</strong> ${a.สถานที่}</p>
+          </div>
+          <div class="map-container">${a['Link สำหรับสถานที่']}</div>
+        </div>
+      `).join('');
     }
 
-    /**
-     * ฟังก์ชันหลักในการกรองข้อมูล Client-side
-     */
-    function applyFilters() {
-      const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
-      const schoolVal = document.getElementById('schoolFilter').value;
-      const genderVal = document.getElementById('genderFilter').value;
-      const activityVal = document.getElementById('activityFilter').value;
-
-      const filteredData = studentsData.filter(student => {
-        // 1. ตรวจสอบการค้นหา (ID, ชื่อ, นามสกุล)
-        const matchSearch = 
-          student.id.toLowerCase().includes(searchText) ||
-          student.firstName.toLowerCase().includes(searchText) ||
-          student.lastName.toLowerCase().includes(searchText);
-
-        // 2. ตรวจสอบเงื่อนไข Dropdown (ถ้ามีค่าให้เทียบ ถ้าไม่เลือก(ว่าง)ให้ผ่าน)
-        const matchSchool = schoolVal === "" || student.school === schoolVal;
-        const matchGender = genderVal === "" || student.gender === genderVal;
-        const matchActivity = activityVal === "" || student.activities.includes(activityVal);
-
-        // ต้องผ่านเงื่อนไขทั้งหมดถึงจะแสดงผล
-        return matchSearch && matchSchool && matchGender && matchActivity;
-      });
-
-      renderTable(filteredData);
+    function renderSchedule() {
+      document.getElementById('schedule-table').innerHTML = appData.schedule.map(s => `
+        <tr>
+          <td class="px-6 py-4 text-sm text-gray-900 font-bold">${s['วันที่จัดกิจกรรม'] || s['days']}</td>
+          <td class="px-6 py-4 text-sm text-gray-600">${s['เวลา'] || s['Time']}</td>
+          <td class="px-6 py-4 text-sm text-blue-600 font-medium">${s['ชื่อกิจกรรม'] || s['activities']}</td>
+          <td class="px-6 py-4 text-sm text-gray-500">${s['สถานที่'] || s['location']}</td>
+        </tr>
+      `).join('');
     }
 
-    /**
-     * นำข้อมูลมาสร้างเป็นตาราง (Table Rows)
-     */
-    function renderTable(data) {
-      const tbody = document.getElementById('tableBody');
-      const noDataMsg = document.getElementById('noDataMsg');
-      tbody.innerHTML = '';
+    function openStudentDetail(id) {
+      const s = appData.students.find(x => x.id === id);
+      document.getElementById('m-student-name').innerText = `${s.firstName} ${s.lastName}`;
+      document.getElementById('m-student-info').innerHTML = `รหัสนักเรียน: ${s.id} | สถาบัน: ${s.school} | เพศ: ${s.gender}`;
+      
+      const actDetails = s.activities.map(actName => {
+        const detail = appData.activities.find(a => a.กิจกรรม === actName);
+        return detail ? `
+          <div class="bg-gray-50 p-4 rounded-lg border">
+            <h4 class="font-bold text-blue-600">${detail.กิจกรรม}</h4>
+            <p class="text-sm text-gray-600 mb-2">${detail.รายละเอีอด}</p>
+            <p class="text-xs text-gray-500">📍 ${detail.สถานที่} (${detail.วันที่} ${detail.เวลา})</p>
+          </div>
+        ` : `<p class="text-gray-400">ไม่มีข้อมูลกิจกรรม ${actName}</p>`;
+      }).join('');
 
-      if (data.length === 0) {
-        noDataMsg.classList.remove('hidden');
-        return;
-      } else {
-        noDataMsg.classList.add('hidden');
-      }
-
-      data.forEach(student => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-gray-50 transition-colors";
-
-        // สร้าง Tags สำหรับกิจกรรม
-        let tagsHtml = student.activities.map(act => 
-          `<span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full border border-blue-200 mr-1 mb-1 shadow-sm whitespace-nowrap">${act}</span>`
-        ).join('');
-
-        if(!tagsHtml) tagsHtml = '<span class="text-gray-400 text-xs italic">ไม่มีกิจกรรม</span>';
-
-        tr.innerHTML = `
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">${student.id}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.firstName} ${student.lastName}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${student.school}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${student.gender}</td>
-          <td class="px-6 py-4 text-sm text-gray-600 flex flex-wrap gap-1">${tagsHtml}</td>
-        `;
-        tbody.appendChild(tr);
-      });
+      document.getElementById('m-student-activities').innerHTML = actDetails || '<p class="text-gray-400">ยังไม่ได้เข้าร่วมกิจกรรมใด</p>';
+      document.getElementById('modal-student').classList.remove('hidden');
     }
 
-    /**
-     * จัดการเมื่อเกิด Error
-     */
-    function showError(error) {
-      alert("เกิดข้อผิดพลาดในการดึงข้อมูล: " + error);
-      document.getElementById('loader').style.display = 'none';
-    }
+    function closeModal() { document.getElementById('modal-student').classList.add('hidden'); }
   </script>
 </body>
-</html>
+</html>	
