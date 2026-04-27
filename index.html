@@ -1,258 +1,591 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ข้อมูลกิจกรรม ChE</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Prompt', sans-serif; background-color: #f8fafc; }
-    /* ขีดเส้นใต้สำหรับเมนู Desktop ที่กำลัง Active */
-    .nav-active { border-bottom: 3px solid #3b82f6; color: #1d4ed8 !important; }
-    iframe { width: 100% !important; border-radius: 0.5rem; height: 300px; }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChE Sports Competition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Prompt", sans-serif;
+      }
+      .iframe-container iframe {
+        width: 100% !important;
+        border-radius: 0.5rem;
+      }
+      .hide-scroll::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-gray-800">
+    <div
+      id="loader"
+      class="fixed inset-0 bg-white z-50 flex flex-col justify-center items-center"
+    >
+      <div
+        class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"
+      ></div>
+      <p class="text-blue-800 font-semibold text-lg animate-pulse">
+        กำลังโหลด...
+      </p>
+    </div>
 
-  <div id="loader" class="fixed inset-0 bg-white z-50 flex flex-col justify-center items-center">
-    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-    <p class="mt-4 text-gray-600">กำลังโหลด...</p>
-  </div>
-
-  <nav class="bg-white shadow-md sticky top-0 z-40 relative">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="flex justify-between h-16">
-        
-        <div class="flex-shrink-0 flex items-center font-bold text-blue-600 text-xl">
-          ChE
-        </div>
-        
-        <div class="hidden md:flex space-x-8 items-center">
-          <button onclick="switchView('home')" id="nav-home" class="desktop-nav nav-active px-1 pt-1 text-sm font-medium text-blue-600">รายชื่อ</button>
-          <button onclick="switchView('activities')" id="nav-activities" class="desktop-nav text-gray-500 hover:text-gray-700 px-1 pt-1 text-sm font-medium">รายละเอียดกิจกรรม</button>
-          <button onclick="switchView('schedule')" id="nav-schedule" class="desktop-nav text-gray-500 hover:text-gray-700 px-1 pt-1 text-sm font-medium">กำหนดการ</button>
-        </div>
-
-        <div class="flex items-center md:hidden">
-          <button onclick="toggleMobileMenu()" class="text-gray-500 hover:text-blue-600 focus:outline-none p-2">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
+    <div class="flex h-screen overflow-hidden">
+      <aside
+        id="sidebar"
+        class="bg-blue-800 text-white w-64 flex-shrink-0 flex flex-col transition-transform duration-300 transform -translate-x-full md:translate-x-0 fixed md:relative z-50 h-full inset-y-0 left-0 shadow-2xl"
+      >
+        <div
+          class="p-6 border-b border-blue-700 flex justify-between items-center"
+        >
+          <h1 class="text-xl font-bold whitespace-nowrap">
+            <i class="fas fa-trophy text-yellow-400 mr-2"></i> ChE
+          </h1>
+          <button
+            onclick="toggleSidebar()"
+            class="md:hidden text-white hover:text-gray-300 focus:outline-none"
+          >
+            <i class="fas fa-times text-2xl"></i>
           </button>
         </div>
+        <nav class="flex-1 overflow-y-auto py-4 hide-scroll">
+          <ul class="space-y-2 px-4">
+            <li>
+              <button
+                onclick="navigate('announcement')"
+                id="nav-announcement"
+                class="w-full text-left px-4 py-3 rounded hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-bullhorn w-6"></i> ประกาศ
+              </button>
+            </li>
+            <li>
+              <button
+                onclick="navigate('students')"
+                id="nav-students"
+                class="w-full text-left px-4 py-3 rounded hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-users w-6"></i> รายชื่อผู้เข้าร่วม
+              </button>
+            </li>
+            <li>
+              <button
+                onclick="navigate('activities')"
+                id="nav-activities"
+                class="w-full text-left px-4 py-3 rounded hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-running w-6"></i> ข้อมูลกิจกรรม
+              </button>
+            </li>
+            <li>
+              <button
+                onclick="navigate('schedule')"
+                id="nav-schedule"
+                class="w-full text-left px-4 py-3 rounded hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-calendar-alt w-6"></i> ตารางกิจกรรม
+              </button>
+            </li>
+            <li>
+              <button
+                onclick="navigate('scoreboard')"
+                id="nav-scoreboard"
+                class="w-full text-left px-4 py-3 rounded hover:bg-blue-700 transition"
+              >
+                <i class="fas fa-medal w-6"></i> ผลการแข่งขัน
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </aside>
 
-      </div>
-    </div>
+      <div class="flex-1 flex flex-col w-full">
+        <header
+          class="bg-white shadow-sm h-16 flex items-center px-4 md:hidden z-30 relative"
+        >
+          <button
+            onclick="toggleSidebar()"
+            class="text-gray-600 focus:outline-none"
+          >
+            <i class="fas fa-bars text-2xl"></i>
+          </button>
+          <h1 class="text-lg font-bold text-blue-800 ml-4">
+            <i class="fas fa-trophy text-yellow-500 mr-1"></i> กีฬาสีนักเรียน
+          </h1>
+        </header>
 
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full z-50">
-      <div class="px-4 pt-2 pb-4 space-y-2">
-        <button onclick="switchView('home')" id="mob-nav-home" class="mobile-nav block w-full text-left px-3 py-2 rounded-md text-base font-medium text-blue-600 bg-blue-50">รายชื่อ</button>
-        <button onclick="switchView('activities')" id="mob-nav-activities" class="mobile-nav block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600">รายละเอียดกิจกรรม</button>
-        <button onclick="switchView('schedule')" id="mob-nav-schedule" class="mobile-nav block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-blue-600">กำหนดการ</button>
-      </div>
-    </div>
-  </nav>
-
-  <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    
-    <div id="view-home" class="view-section">
-      <div class="bg-white p-6 rounded-xl shadow-sm mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-        <input type="text" id="search" placeholder="ค้นหาชื่อ/ID..." oninput="filterStudents()" class="border p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500 outline-none">
-        <select id="f-school" onchange="filterStudents()" class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"><option value="">ทุกสถาบัน</option></select>
-        <select id="f-gender" onchange="filterStudents()" class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"><option value="">ทุกเพศ</option></select>
-        <select id="f-activity" onchange="filterStudents()" class="border p-2 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"><option value="">ทุกกิจกรรม</option></select>
-      </div>
-
-      <div class="bg-white shadow overflow-x-auto rounded-xl">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50 whitespace-nowrap">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ชื่อ-นามสกุล</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">สถาบัน</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">เพศ</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">กิจกรรมที่เข้าร่วม</th>
-            </tr>
-          </thead>
-          <tbody id="student-table" class="divide-y divide-gray-200 bg-white"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="view-activities" class="view-section hidden">
-      <div id="activity-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-    </div>
-
-    <div id="view-schedule" class="view-section hidden">
-      <div class="bg-white shadow rounded-xl overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-blue-600 text-white whitespace-nowrap">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium uppercase">วัน/วันที่</th>
-              <th class="px-6 py-3 text-left text-xs font-medium uppercase">เวลา</th>
-              <th class="px-6 py-3 text-left text-xs font-medium uppercase">กิจกรรม</th>
-              <th class="px-6 py-3 text-left text-xs font-medium uppercase">สถานที่</th>
-            </tr>
-          </thead>
-          <tbody id="schedule-table" class="divide-y divide-gray-200 bg-white"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="modal-student" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-      <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
-        <div class="flex justify-between items-start mb-4">
-          <h2 id="m-student-name" class="text-2xl font-bold"></h2>
-          <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
-        </div>
-        <div id="m-student-info" class="mb-6 text-gray-600"></div>
-        <h3 class="font-bold border-b pb-2 mb-4">รายละเอียดกิจกรรมที่เข้าร่วม</h3>
-        <div id="m-student-activities" class="space-y-4"></div>
-      </div>
-    </div>
-
-  </main>
-
-  <script>
-    // ** อย่าลืมนำ URL ของ Web App อันเดิมมาใส่ตรงนี้นะครับ **
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzbQIdnzCmFSn9ENUqXqHTRYsH4Q_XQxSAzW6Sf5krNH0VCZLt1Eyff5Jiqm1l5EZ9F3w/exec";
-    let appData = { students: [], activities: [], schedule: [] };
-
-    window.onload = async () => {
-      try {
-        const res = await fetch(GAS_URL);
-        appData = await res.json();
-        initUI();
-        document.getElementById('loader').style.display = 'none';
-      } catch (e) { alert("โหลดข้อมูลไม่สำเร็จ: " + e); }
-    };
-
-    function initUI() {
-      const schools = [...new Set(appData.students.map(s => s.school))].filter(Boolean).sort();
-      const genders = [...new Set(appData.students.map(s => s.gender))].filter(Boolean).sort();
-      const acts = appData.activities.map(a => a.กิจกรรม).filter(Boolean).sort();
-      
-      schools.forEach(s => document.getElementById('f-school').innerHTML += `<option value="${s}">${s}</option>`);
-      genders.forEach(g => document.getElementById('f-gender').innerHTML += `<option value="${g}">${g}</option>`);
-      acts.forEach(a => document.getElementById('f-activity').innerHTML += `<option value="${a}">${a}</option>`);
-      
-      renderStudents(appData.students);
-      renderActivities();
-      renderSchedule();
-    }
-
-    // ฟังก์ชันสำหรับเปิด/ปิด Hamburger Menu ในมือถือ
-    function toggleMobileMenu() {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
-    }
-
-    // ปรับปรุงฟังก์ชันเปลี่ยนหน้า เพื่อให้จัดการสถานะปุ่มทั้ง Desktop และ Mobile
-    function switchView(view) {
-      // 1. เปลี่ยนหน้า View
-      document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
-      document.getElementById(`view-${view}`).classList.remove('hidden');
-      
-      // 2. จัดการสีปุ่ม Desktop
-      document.querySelectorAll('.desktop-nav').forEach(b => {
-        b.classList.remove('nav-active', 'text-blue-600');
-        b.classList.add('text-gray-500');
-      });
-      document.getElementById(`nav-${view}`).classList.add('nav-active', 'text-blue-600');
-      document.getElementById(`nav-${view}`).classList.remove('text-gray-500');
-
-      // 3. จัดการสีปุ่ม Mobile
-      document.querySelectorAll('.mobile-nav').forEach(b => {
-        b.classList.remove('text-blue-600', 'bg-blue-50');
-        b.classList.add('text-gray-600');
-      });
-      document.getElementById(`mob-${view}` || `mob-nav-${view}`).classList.add('text-blue-600', 'bg-blue-50');
-      document.getElementById(`mob-nav-${view}`).classList.remove('text-gray-600');
-
-      // 4. ซ่อนเมนู Mobile เมื่อกดเลือกหน้าแล้ว
-      document.getElementById('mobile-menu').classList.add('hidden');
-    }
-
-    function renderStudents(data) {
-      const tbody = document.getElementById('student-table');
-      tbody.innerHTML = data.map(s => `
-        <tr class="hover:bg-blue-50 cursor-pointer transition whitespace-nowrap" onclick="openStudentDetail('${s.id}')">
-          <td class="px-6 py-4 text-sm font-medium text-gray-900">${s.id}</td>
-          <td class="px-6 py-4 text-sm text-gray-700">${s.firstName} ${s.lastName}</td>
-          <td class="px-6 py-4 text-sm text-gray-600">${s.school}</td>
-          <td class="px-6 py-4 text-sm text-gray-600">${s.gender}</td>
-          <td class="px-6 py-4 flex flex-wrap gap-1">
-            ${s.activities.length > 0 
-              ? s.activities.map(a => `<span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full">${a}</span>`).join('')
-              : '<span class="text-gray-400 text-xs">ไม่มีกิจกรรม</span>'}
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function filterStudents() {
-      const q = document.getElementById('search').value.toLowerCase();
-      const sch = document.getElementById('f-school').value;
-      const gen = document.getElementById('f-gender').value;
-      const act = document.getElementById('f-activity').value;
-
-      const filtered = appData.students.filter(s => {
-        const mSearch = s.firstName.toLowerCase().includes(q) || s.lastName.toLowerCase().includes(q) || s.id.includes(q);
-        const mSchool = !sch || s.school === sch;
-        const mGender = !gen || s.gender === gen;
-        const mAct = !act || s.activities.some(studentAct => String(studentAct) === String(act));
-        
-        return mSearch && mSchool && mGender && mAct;
-      });
-      renderStudents(filtered);
-    }
-
-    function renderActivities() {
-      document.getElementById('activity-list').innerHTML = appData.activities.map(a => `
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <h3 class="text-xl font-bold text-blue-600 mb-2">${a.กิจกรรม}</h3>
-          <p class="text-gray-600 text-sm mb-4">${a.รายละเอีอด}</p>
-          <div class="text-xs text-gray-500 space-y-1 mb-4">
-            <p><strong>วันที่:</strong> ${a.วันที่} | <strong>เวลา:</strong> ${a.เวลา}</p>
-            <p><strong>สถานที่:</strong> ${a.สถานที่}</p>
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-100">
+          <div id="page-announcement" class="page-section hidden">
+            <h2
+              class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6"
+            >
+              ประกาศข่าวสาร
+            </h2>
+            <div id="announcement-container" class="space-y-4"></div>
           </div>
-          <div class="map-container">${a['Link สำหรับสถานที่']}</div>
-        </div>
-      `).join('');
-    }
 
-    function renderSchedule() {
-      document.getElementById('schedule-table').innerHTML = appData.schedule.map(s => `
-        <tr class="whitespace-nowrap">
-          <td class="px-6 py-4 text-sm text-gray-900 font-bold">${s['วันที่จัดกิจกรรม'] || s['days']}</td>
-          <td class="px-6 py-4 text-sm text-gray-600">${s['เวลา'] || s['Time']}</td>
-          <td class="px-6 py-4 text-sm text-blue-600 font-medium">${s['ชื่อกิจกรรม'] || s['activities']}</td>
-          <td class="px-6 py-4 text-sm text-gray-500">${s['สถานที่'] || s['location']}</td>
-        </tr>
-      `).join('');
-    }
+          <div id="page-students" class="page-section hidden">
+            <h2
+              class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6"
+            >
+              รายชื่อผู้เข้าร่วมกิจกรรม
+            </h2>
 
-    function openStudentDetail(id) {
-      const s = appData.students.find(x => x.id === id);
-      document.getElementById('m-student-name').innerText = `${s.firstName} ${s.lastName}`;
-      document.getElementById('m-student-info').innerHTML = `รหัสนักเรียน: ${s.id} | สถาบัน: ${s.school} | เพศ: ${s.gender}`;
-      
-      const actDetails = s.activities.map(actName => {
-        const detail = appData.activities.find(a => a.กิจกรรม === actName);
-        return detail ? `
-          <div class="bg-gray-50 p-4 rounded-lg border">
-            <h4 class="font-bold text-blue-600">${detail.กิจกรรม}</h4>
-            <p class="text-sm text-gray-600 mb-2">${detail.รายละเอีอด}</p>
-            <p class="text-xs text-gray-500">📍 ${detail.สถานที่} (${detail.วันที่} ${detail.เวลา})</p>
+            <div
+              class="bg-white p-4 rounded-lg shadow mb-6 grid grid-cols-1 md:grid-cols-4 gap-4"
+            >
+              <div>
+                <label class="block text-sm text-gray-600 mb-1"
+                  >ค้นหา (ID, ชื่อ, นามสกุล)</label
+                >
+                <input
+                  type="text"
+                  id="searchStudent"
+                  oninput="renderStudents()"
+                  placeholder="พิมพ์ข้อความ..."
+                  class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-1">สถาบัน</label>
+                <select
+                  id="filterInst"
+                  onchange="renderStudents()"
+                  class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ></select>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-1">เพศ</label>
+                <select
+                  id="filterGender"
+                  onchange="renderStudents()"
+                  class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ></select>
+              </div>
+              <div>
+                <label class="block text-sm text-gray-600 mb-1"
+                  >กิจกรรมที่เข้าร่วม</label
+                >
+                <select
+                  id="filterActivity"
+                  onchange="renderStudents()"
+                  class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                ></select>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-x-auto">
+              <table class="w-full whitespace-nowrap">
+                <thead class="bg-blue-50">
+                  <tr class="text-left text-blue-800 text-sm font-semibold">
+                    <th class="p-4 border-b">ID</th>
+                    <th class="p-4 border-b">ชื่อ-นามสกุล</th>
+                    <th class="p-4 border-b">สถาบัน</th>
+                    <th class="p-4 border-b">เพศ</th>
+                    <th class="p-4 border-b">กิจกรรม (Tags)</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="student-table-body"
+                  class="text-gray-700 text-sm divide-y"
+                ></tbody>
+              </table>
+            </div>
           </div>
-        ` : `<div class="bg-gray-50 p-4 rounded-lg border border-dashed"><h4 class="font-bold text-gray-500">${actName}</h4><p class="text-sm text-gray-400">ยังไม่มีรายละเอียดสำหรับกิจกรรมนี้</p></div>`;
-      }).join('');
 
-      document.getElementById('m-student-activities').innerHTML = actDetails || '<p class="text-gray-400 text-center py-4">ยังไม่ได้เข้าร่วมกิจกรรมใด</p>';
-      document.getElementById('modal-student').classList.remove('hidden');
-    }
+          <div id="page-activities" class="page-section hidden">
+            <h2
+              class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6"
+            >
+              รายละเอียดกิจกรรม
+            </h2>
+            <div
+              id="activities-container"
+              class="grid grid-cols-1 lg:grid-cols-2 gap-6"
+            ></div>
+          </div>
 
-    function closeModal() { document.getElementById('modal-student').classList.add('hidden'); }
-  </script>
-</body>
+          <div id="page-schedule" class="page-section hidden">
+            <h2
+              class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6"
+            >
+              ตารางกิจกรรม
+            </h2>
+            <div class="bg-white rounded-lg shadow overflow-x-auto">
+              <table class="w-full whitespace-nowrap">
+                <thead class="bg-blue-50">
+                  <tr class="text-left text-blue-800 text-sm font-semibold">
+                    <th class="p-4 border-b">วันที่ (Day)</th>
+                    <th class="p-4 border-b">เวลา</th>
+                    <th class="p-4 border-b">กิจกรรม</th>
+                    <th class="p-4 border-b">สถานที่</th>
+                  </tr>
+                </thead>
+                <tbody
+                  id="schedule-table-body"
+                  class="text-gray-700 text-sm divide-y"
+                ></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="page-scoreboard" class="page-section hidden">
+            <h2
+              class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6"
+            >
+              ผลการแข่งขัน
+            </h2>
+
+            <div class="bg-white p-4 rounded-lg shadow mb-6">
+              <label class="block text-sm text-gray-600 mb-1"
+                >เลือกกิจกรรม</label
+              >
+              <select
+                id="filterScoreActivity"
+                onchange="renderScoreboard()"
+                class="w-full md:w-1/3 border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              ></select>
+            </div>
+
+            <div
+              id="scoreboard-container"
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            ></div>
+          </div>
+        </main>
+      </div>
+
+      <div
+        id="sidebar-backdrop"
+        onclick="toggleSidebar()"
+        class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"
+      ></div>
+    </div>
+
+    <script>
+      // ==========================================
+      // ตั้งค่า GAS URL ของคุณที่นี่ (สำคัญมาก)
+      // ==========================================
+      const GAS_URL =
+        "https://script.google.com/macros/s/AKfycbxP9A0CYEL0frasJJ2lmV3lsKn_VfIMEX0IUbm-L_1uPu_fIjAMUOaPotOV7x5JGXB9Rw/exec"; // วาง URL ของคุณที่นี่
+
+      let appData = null; // เก็บ State ข้อมูลทั้งหมด
+
+      // เมื่อโหลดหน้าเว็บเสร็จ
+      window.onload = () => {
+        fetchData();
+      };
+
+      // ฟังก์ชันดึงข้อมูลจาก GAS Backend (Decoupled Approach)
+      async function fetchData() {
+        try {
+          const response = await fetch(GAS_URL);
+          if (!response.ok) throw new Error("Network response was not ok");
+
+          appData = await response.json();
+
+          // ซ่อน Loader เมื่อข้อมูลโหลดเสร็จ
+          document.getElementById("loader").classList.add("hidden");
+
+          // เตรียมข้อมูลสำหรับ UI
+          setupFilters();
+
+          // นำทางไปหน้าแรก
+          navigate("announcement");
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          document.getElementById("loader").innerHTML =
+            `<p class="text-red-500 font-bold text-xl">เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณารีเฟรชหน้าเว็บ</p>`;
+        }
+      }
+
+      // ================= SPA Routing =================
+      function navigate(pageId) {
+        // ซ่อนทุกหน้า
+        document
+          .querySelectorAll(".page-section")
+          .forEach((el) => el.classList.add("hidden"));
+        // แสดงหน้าที่เลือก
+        document.getElementById(`page-${pageId}`).classList.remove("hidden");
+
+        // อัปเดตสีของ Sidebar Menu
+        document
+          .querySelectorAll("aside nav button")
+          .forEach((btn) =>
+            btn.classList.remove("bg-blue-700", "font-semibold"),
+          );
+        document
+          .getElementById(`nav-${pageId}`)
+          .classList.add("bg-blue-700", "font-semibold");
+
+        // Render ข้อมูลตามหน้า
+        if (pageId === "announcement") renderAnnouncements();
+        if (pageId === "students") renderStudents();
+        if (pageId === "activities") renderActivities();
+        if (pageId === "schedule") renderSchedule();
+        if (pageId === "scoreboard") renderScoreboard();
+
+        // ซ่อน Sidebar ในมือถือเมื่อกดเปลี่ยนหน้า
+        if (window.innerWidth < 768) {
+          document.getElementById("sidebar").classList.add("-translate-x-full");
+          document.getElementById("sidebar-backdrop").classList.add("hidden");
+        }
+      }
+
+      // ================= Hamburger Toggle =================
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("sidebar-backdrop");
+
+        // สไลด์เมนูเข้า/ออก โดยการเพิ่ม-ลดคลาส -translate-x-full
+        sidebar.classList.toggle("-translate-x-full");
+        // แสดง/ซ่อน แถบสีดำพื้นหลัง
+        backdrop.classList.toggle("hidden");
+      }
+
+      // ================= UI Renders =================
+
+      // 1. ประกาศ (Announcements)
+      function renderAnnouncements() {
+        const container = document.getElementById("announcement-container");
+        container.innerHTML = appData.announcements
+          .map(
+            (item) => `
+                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-400">
+                    <h3 class="text-xl font-bold text-blue-800 mb-2">${item.topic}</h3>
+                    <p class="text-gray-600 whitespace-pre-wrap">${item.detail}</p>
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      // ตั้งค่า Dropdown สำหรับตัวกรองหน้า Students และ Scoreboard
+      function setupFilters() {
+        // ดึงค่า Unique สำหรับ Dropdown นักเรียน
+        const instSet = new Set(),
+          genderSet = new Set(),
+          activitySet = new Set();
+        appData.students.forEach((s) => {
+          if (s.institute) instSet.add(s.institute);
+          if (s.gender) genderSet.add(s.gender);
+          s.tags.forEach((t) => activitySet.add(t));
+        });
+
+        const createOptions = (set) =>
+          `<option value="">-- ทั้งหมด --</option>` +
+          Array.from(set)
+            .map((val) => `<option value="${val}">${val}</option>`)
+            .join("");
+
+        document.getElementById("filterInst").innerHTML =
+          createOptions(instSet);
+        document.getElementById("filterGender").innerHTML =
+          createOptions(genderSet);
+        document.getElementById("filterActivity").innerHTML =
+          createOptions(activitySet);
+
+        // ตัวกรองกิจกรรมสำหรับหน้า Scoreboard
+        const scoreActSet = new Set(
+          appData.scoreboard.map((s) => s.activity).filter((x) => x),
+        );
+        document.getElementById("filterScoreActivity").innerHTML =
+          createOptions(scoreActSet);
+      }
+
+      // 2. นักเรียน (Students) - พร้อม Real-time Filtering
+      function renderStudents() {
+        const searchText = document
+          .getElementById("searchStudent")
+          .value.toLowerCase();
+        const filterInst = String(document.getElementById("filterInst").value);
+        const filterGender = String(
+          document.getElementById("filterGender").value,
+        );
+        const filterActivity = String(
+          document.getElementById("filterActivity").value,
+        );
+
+        // การกรองข้อมูลแบบ Client-side (การเทียบค่าอย่างเข้มงวดด้วย String === String)
+        const filteredData = appData.students.filter((s) => {
+          const matchSearch =
+            String(s.id).toLowerCase().includes(searchText) ||
+            String(s.name).toLowerCase().includes(searchText) ||
+            String(s.surname).toLowerCase().includes(searchText);
+          const matchInst =
+            filterInst === "" || String(s.institute) === filterInst;
+          const matchGender =
+            filterGender === "" || String(s.gender) === filterGender;
+          const matchAct =
+            filterActivity === "" || s.tags.includes(filterActivity);
+
+          return matchSearch && matchInst && matchGender && matchAct;
+        });
+
+        const tbody = document.getElementById("student-table-body");
+        tbody.innerHTML = filteredData
+          .map(
+            (s) => `
+                <tr class="hover:bg-blue-50 transition">
+                    <td class="p-4">${s.id}</td>
+                    <td class="p-4 font-medium text-gray-900">${s.name} ${s.surname}</td>
+                    <td class="p-4">${s.institute}</td>
+                    <td class="p-4">${s.gender}</td>
+                    <td class="p-4">
+                        <div class="flex flex-wrap gap-1">
+                            ${s.tags.map((tag) => `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full border border-blue-200">${tag}</span>`).join("")}
+                        </div>
+                    </td>
+                </tr>
+            `,
+          )
+          .join("");
+
+        if (filteredData.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">ไม่พบข้อมูลที่ค้นหา</td></tr>`;
+        }
+      }
+
+      // 3. กิจกรรม (Activities)
+      function renderActivities() {
+        const container = document.getElementById("activities-container");
+        container.innerHTML = appData.activities
+          .map(
+            (act) => `
+                <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+                    <div class="p-6 flex-1">
+                        <h3 class="text-xl font-bold text-blue-800 mb-3">${act.name}</h3>
+                        <p class="text-gray-600 mb-4 whitespace-pre-wrap">${act.detail}</p>
+                        <div class="space-y-2 text-sm text-gray-700">
+                            <p><i class="far fa-calendar text-blue-500 w-5"></i> <strong>วันที่:</strong> ${act.date}</p>
+                            <p><i class="far fa-clock text-blue-500 w-5"></i> <strong>เวลา:</strong> ${act.time}</p>
+                            <p><i class="fas fa-map-marker-alt text-red-500 w-5"></i> <strong>สถานที่:</strong> ${act.location}</p>
+                        </div>
+                    </div>
+                    ${
+                      act.map && act.map.includes("<iframe")
+                        ? `<div class="bg-gray-100 p-2 iframe-container h-48">${act.map}</div>`
+                        : ""
+                    }
+                </div>
+            `,
+          )
+          .join("");
+      }
+
+      // 4. ตารางกิจกรรม (Schedule)
+      function renderSchedule() {
+        const pageContainer = document.getElementById("page-schedule");
+
+        // ล้างเนื้อหาเดิมออกก่อน (รวมถึงตารางเก่าถ้ามี)
+        // เก็บเฉพาะหัวข้อไว้
+        pageContainer.innerHTML = `<h2 class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6">ตารางกิจกรรม</h2>`;
+
+        // Group ข้อมูลตามวัน
+        const groupedData = appData.schedule.reduce((acc, item) => {
+          const day = item.date || "ไม่ระบุวัน";
+          if (!acc[day]) acc[day] = [];
+          acc[day].push(item);
+          return acc;
+        }, {});
+
+        // สร้าง Container สำหรับรายการใหม่
+        const listWrapper = document.createElement("div");
+        listWrapper.className = "space-y-8";
+
+        // วนลูปสร้างหน้าตาตาม Day Group
+        Object.keys(groupedData).forEach((day) => {
+          const daySection = document.createElement("div");
+          daySection.innerHTML = `
+            <div class="flex items-center mb-4">
+                <div class="bg-blue-800 text-white px-6 py-2 rounded-full font-bold shadow-md">
+                    <i class="far fa-calendar-check mr-2"></i> วันที่ ${day}
+                </div>
+                <div class="flex-1 h-px bg-blue-200 ml-4"></div>
+            </div>
+            <div class="space-y-3 ml-4 md:ml-8 border-l-2 border-blue-100 pl-6 py-2">
+                ${groupedData[day]
+                  .map(
+                    (item) => `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center gap-2 md:gap-6 hover:shadow-md transition relative">
+                        <div class="absolute -left-[33px] top-1/2 -translate-y-1/2 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-sm"></div>
+                        
+                        <div class="text-blue-600 font-bold text-lg md:w-24 flex-shrink-0">
+                            ${item.time}
+                        </div>
+                        
+                        <div class="flex-1">
+                            <h4 class="text-gray-800 font-bold text-lg">${item.activity}</h4>
+                            <p class="text-gray-500 text-sm">
+                                <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> ${item.location}
+                            </p>
+                        </div>
+                    </div>
+                `,
+                  )
+                  .join("")}
+            </div>
+        `;
+          listWrapper.appendChild(daySection);
+        });
+
+        pageContainer.appendChild(listWrapper);
+      }
+
+      // 5. ผลการแข่งขัน (Score Board)
+      function renderScoreboard() {
+        const filterScoreActivity = String(
+          document.getElementById("filterScoreActivity").value,
+        );
+
+        const filteredData = appData.scoreboard.filter(
+          (s) =>
+            filterScoreActivity === "" ||
+            String(s.activity) === filterScoreActivity,
+        );
+
+        const container = document.getElementById("scoreboard-container");
+        container.innerHTML = filteredData
+          .map((s) => {
+            // แยกสกอร์ด้วย ":" ตามข้อกำหนด
+            let scores = s.score.split(":").map((x) => x.trim());
+            let score1 = scores[0] || "-";
+            let score2 = scores[1] || "-";
+
+            return `
+                <div class="bg-white p-6 rounded-lg shadow text-center border-t-4 border-blue-600 flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-lg text-gray-600 text-sm mb-4">${s.activity}</h4>
+                        <span class="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded mb-3">รอบ: ${s.round}</span>
+                    </div>
+                    <div class="flex justify-between items-center w-full">
+                        <div class="flex-1">
+                            <p class="font-bold text-lg text-gray-800 truncate">${s.team1}</p>
+                        </div>
+                        <div class="px-4">
+                            <div class="bg-blue-800 text-white font-black text-2xl px-4 py-2 rounded shadow-inner flex items-center gap-2 tracking-widest">
+                                <span>${score1}</span> <span class="text-blue-300 text-lg">:</span> <span>${score2}</span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-bold text-lg text-gray-800 truncate">${s.team2}</p>
+                        </div>
+                    </div>
+                </div>
+                `;
+          })
+          .join("");
+
+        if (filteredData.length === 0) {
+          container.innerHTML = `<p class="col-span-full text-center text-gray-500 mt-8">ไม่พบข้อมูลผลการแข่งขัน</p>`;
+        }
+      }
+    </script>
+  </body>
 </html>
