@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ChE Sports Competition</title>
+    <link rel="preload" as="image" href="ใส่_URL_รูปภาพพื้นหลังที่นี่" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -25,15 +26,52 @@
   </head>
   <body class="bg-gray-100 text-gray-800">
     <div
-      id="loader"
-      class="fixed inset-0 bg-white z-50 flex flex-col justify-center items-center"
+      id="welcome-screen"
+      style="
+        background-image: url(&quot;https://i.postimg.cc/9XdMMfsJ/DSC07648.webp&quot;);
+        background-size: cover;
+        background-position: center;
+      "
+      class="fixed inset-0 bg-blue-900 z-[60] flex flex-col justify-center items-center text-white transition-opacity duration-700 ease-in-out"
     >
-      <div
-        class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"
-      ></div>
-      <p class="text-blue-800 font-semibold text-lg animate-pulse">
-        กำลังโหลด...
-      </p>
+      <div class="absolute inset-0 bg-black/60 z-[-1]"></div>
+      <div class="text-center p-8 max-w-lg w-full z-10">
+        <img
+          src="https://i.postimg.cc/9XdMMfsJ/DSC07648.webp"
+          alt="Logo"
+          class="h-32 w-auto mx-auto mb-6 drop-shadow-lg"
+        />
+        <h1
+          class="text-4xl md:text-5xl font-black mb-4 tracking-wide drop-shadow-md"
+        >
+          ChE Sports Competition
+        </h1>
+        <p
+          class="text-blue-100 text-lg md:text-xl mb-10 font-light drop-shadow-sm"
+        >
+          ระบบประชาสัมพันธ์และติดตามผลการแข่งขัน
+        </p>
+
+        <div
+          class="flex flex-col md:flex-row gap-4 justify-center items-center w-full px-6 md:px-0"
+        >
+          <button
+            onclick="enterWebsite()"
+            class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-extrabold py-4 px-10 rounded-xl shadow-lg transform hover:-translate-y-1 transition-all duration-300 w-full md:w-auto text-lg flex items-center justify-center cursor-pointer order-1 md:order-1"
+          >
+            เข้าสู่เว็บไซต์ <i class="fas fa-arrow-right ml-3"></i>
+          </button>
+
+          <button
+            onclick="
+              window.location.href = 'mailto:plampawaritponampai@gmail.com'
+            "
+            class="bg-white/20 hover:bg-white/30 text-white font-bold py-4 px-10 rounded-xl backdrop-blur-sm border border-white/30 shadow-lg transform hover:-translate-y-1 transition-all duration-300 w-full md:w-auto text-lg flex items-center justify-center cursor-pointer order-2 md:order-2"
+          >
+            <i class="fas fa-envelope mr-3"></i> ติดต่อเรา
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="flex h-screen overflow-hidden">
@@ -278,34 +316,77 @@
       const GAS_URL =
         "https://script.google.com/macros/s/AKfycbxP9A0CYEL0frasJJ2lmV3lsKn_VfIMEX0IUbm-L_1uPu_fIjAMUOaPotOV7x5JGXB9Rw/exec"; // วาง URL ของคุณที่นี่
 
-      let appData = null; // เก็บ State ข้อมูลทั้งหมด
+      let appData = null; // เก็บข้อมูลทั้งหมด
+      let isLoading = true; // State สำหรับเช็คว่ากำลังโหลดข้อมูลอยู่หรือไม่
 
-      // เมื่อโหลดหน้าเว็บเสร็จ
+      // เมื่อโหลดหน้าเว็บเสร็จ สั่งดึงข้อมูลแบบเบื้องหลัง (ไม่บล็อกหน้าจอ)
       window.onload = () => {
-        fetchData();
+        fetchDataInBackground();
       };
 
-      // ฟังก์ชันดึงข้อมูลจาก GAS Backend (Decoupled Approach)
-      async function fetchData() {
+      // ฟังก์ชันเมื่อผู้ใช้กดปุ่ม "เข้าสู่เว็บไซต์"
+      function enterWebsite() {
+        const welcomeScreen = document.getElementById("welcome-screen");
+        welcomeScreen.style.opacity = "0"; // เฟดออก
+        setTimeout(() => {
+          welcomeScreen.classList.add("hidden"); // ซ่อน
+          navigate("announcement"); // นำทางไปหน้า Home (ประกาศ)
+        }, 700);
+      }
+
+      // ดึงข้อมูลเบื้องหลัง
+      async function fetchDataInBackground() {
         try {
           const response = await fetch(GAS_URL);
           if (!response.ok) throw new Error("Network response was not ok");
 
           appData = await response.json();
+          isLoading = false; // โหลดเสร็จแล้วเปลี่ยนสถานะ
 
-          // ซ่อน Loader เมื่อข้อมูลโหลดเสร็จ
-          document.getElementById("loader").classList.add("hidden");
+          setupFilters(); // เตรียม Dropdown
 
-          // เตรียมข้อมูลสำหรับ UI
-          setupFilters();
-
-          // นำทางไปหน้าแรก
-          navigate("announcement");
+          // หากผู้ใช้อยู่ในหน้าเว็บแล้ว (Welcome screen ถูกซ่อนไปแล้ว) ให้รีเฟรชหน้าปัจจุบันเพื่อเอา Skeleton ออก
+          if (
+            document
+              .getElementById("welcome-screen")
+              .classList.contains("hidden")
+          ) {
+            refreshCurrentPage();
+          }
         } catch (error) {
           console.error("Error fetching data:", error);
-          document.getElementById("loader").innerHTML =
-            `<p class="text-red-500 font-bold text-xl">เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณารีเฟรชหน้าเว็บ</p>`;
+          alert("เกิดข้อผิดพลาดในการเชื่อมต่อข้อมูล กรุณารีเฟรชหน้าเว็บ");
         }
+      }
+
+      // ฟังก์ชันเช็คว่าเปิดหน้าไหนอยู่เพื่อสั่งรีเฟรชเอา Skeleton ออก
+      function refreshCurrentPage() {
+        if (
+          !document
+            .getElementById("page-announcement")
+            .classList.contains("hidden")
+        )
+          renderAnnouncements();
+        if (
+          !document.getElementById("page-students").classList.contains("hidden")
+        )
+          renderStudents();
+        if (
+          !document
+            .getElementById("page-activities")
+            .classList.contains("hidden")
+        )
+          renderActivities();
+        if (
+          !document.getElementById("page-schedule").classList.contains("hidden")
+        )
+          renderSchedule();
+        if (
+          !document
+            .getElementById("page-scoreboard")
+            .classList.contains("hidden")
+        )
+          renderScoreboard();
       }
 
       // ================= SPA Routing =================
@@ -354,19 +435,43 @@
 
       // ================= UI Renders =================
 
-      // 1. ประกาศ (Announcements)
+      // 1. ประกาศ (Announcements) พร้อมระบบ Skeleton Loading
       function renderAnnouncements() {
         const container = document.getElementById("announcement-container");
-        container.innerHTML = appData.announcements
-          .map(
-            (item) => `
-                <div class="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-400">
-                    <h3 class="text-xl font-bold text-blue-800 mb-2">${item.topic}</h3>
-                    <p class="text-gray-600 whitespace-pre-wrap">${item.detail}</p>
-                </div>
-            `,
-          )
-          .join("");
+
+        // --- ถ้าระบบยังโหลดข้อมูลอยู่ ให้โชว์ Skeleton ---
+        if (isLoading) {
+          // สร้างกล่องจำลอง 3 กล่อง
+          container.innerHTML = Array(3)
+            .fill("")
+            .map(
+              () => `
+                    <div class="bg-white p-6 rounded-lg shadow border-l-4 border-gray-200 animate-pulse">
+                        <div class="h-6 bg-gray-200 rounded-md w-1/3 mb-4"></div>
+                        <div class="h-4 bg-gray-200 rounded-md w-full mb-2"></div>
+                        <div class="h-4 bg-gray-200 rounded-md w-5/6"></div>
+                    </div>
+                `,
+            )
+            .join("");
+          return; // หยุดการทำงานแค่นี้จนกว่าจะโหลดเสร็จ
+        }
+
+        // --- ถ้าโหลดเสร็จแล้ว ให้โชว์ข้อมูลจริง ---
+        if (appData && appData.announcements.length > 0) {
+          container.innerHTML = appData.announcements
+            .map(
+              (item) => `
+                    <div class="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-400 transform transition duration-500 hover:scale-[1.01]">
+                        <h3 class="text-xl font-bold text-blue-800 mb-2">${item.topic}</h3>
+                        <p class="text-gray-600 whitespace-pre-wrap">${item.detail}</p>
+                    </div>
+                `,
+            )
+            .join("");
+        } else {
+          container.innerHTML = `<p class="text-gray-500 text-center py-8">ยังไม่มีประกาศในขณะนี้</p>`;
+        }
       }
 
       // ตั้งค่า Dropdown สำหรับตัวกรองหน้า Students และ Scoreboard
@@ -402,8 +507,32 @@
           createOptions(scoreActSet);
       }
 
-      // 2. นักเรียน (Students) - พร้อม Real-time Filtering
+      // 2. นักเรียน (Students) - พร้อม Skeleton
       function renderStudents() {
+        const tbody = document.getElementById("student-table-body");
+
+        // --- ถ้าระบบยังโหลดข้อมูลอยู่ ให้โชว์ Skeleton ของตาราง ---
+        if (isLoading) {
+          tbody.innerHTML = Array(5)
+            .fill("")
+            .map(
+              () => `
+                    <tr class="animate-pulse bg-white">
+                        <td class="p-4"><div class="h-4 bg-gray-200 rounded w-12"></div></td>
+                        <td class="p-4"><div class="h-4 bg-gray-200 rounded w-32 md:w-48"></div></td>
+                        <td class="p-4"><div class="h-4 bg-gray-200 rounded w-16 md:w-24"></div></td>
+                        <td class="p-4"><div class="h-4 bg-gray-200 rounded w-10"></div></td>
+                        <td class="p-4"><div class="flex gap-2"><div class="h-6 bg-gray-200 rounded-full w-16"></div><div class="h-6 bg-gray-200 rounded-full w-12 hidden md:block"></div></div></td>
+                    </tr>
+                `,
+            )
+            .join("");
+          return; // หยุดการทำงานแค่นี้จนกว่าจะโหลดเสร็จ
+        }
+
+        // --- โหลดข้อมูลเสร็จแล้ว ---
+        if (!appData) return;
+
         const searchText = document
           .getElementById("searchStudent")
           .value.toLowerCase();
@@ -415,7 +544,6 @@
           document.getElementById("filterActivity").value,
         );
 
-        // การกรองข้อมูลแบบ Client-side (การเทียบค่าอย่างเข้มงวดด้วย String === String)
         const filteredData = appData.students.filter((s) => {
           const matchSearch =
             String(s.id).toLowerCase().includes(searchText) ||
@@ -431,7 +559,6 @@
           return matchSearch && matchInst && matchGender && matchAct;
         });
 
-        const tbody = document.getElementById("student-table-body");
         tbody.innerHTML = filteredData
           .map(
             (s) => `
@@ -455,13 +582,41 @@
         }
       }
 
-      // 3. กิจกรรม (Activities)
+      // 3. กิจกรรม (Activities) - พร้อม Skeleton
       function renderActivities() {
         const container = document.getElementById("activities-container");
+
+        if (isLoading) {
+          // จำลองการ์ดกิจกรรม 4 ใบ
+          container.innerHTML = Array(4)
+            .fill("")
+            .map(
+              () => `
+                    <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col animate-pulse">
+                        <div class="p-6 flex-1 space-y-4">
+                            <div class="h-6 bg-gray-200 rounded w-1/2"></div>
+                            <div class="h-4 bg-gray-200 rounded w-full"></div>
+                            <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                            <div class="space-y-2 pt-4">
+                                <div class="h-4 bg-gray-200 rounded w-1/3"></div>
+                                <div class="h-4 bg-gray-200 rounded w-1/4"></div>
+                                <div class="h-4 bg-gray-200 rounded w-2/5"></div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-200 h-48 w-full mt-auto"></div>
+                    </div>
+                `,
+            )
+            .join("");
+          return;
+        }
+
+        if (!appData) return;
+
         container.innerHTML = appData.activities
           .map(
             (act) => `
-                <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col">
+                <div class="bg-white rounded-lg shadow overflow-hidden flex flex-col transform transition duration-300 hover:shadow-lg">
                     <div class="p-6 flex-1">
                         <h3 class="text-xl font-bold text-blue-800 mb-3">${act.name}</h3>
                         <p class="text-gray-600 mb-4 whitespace-pre-wrap">${act.detail}</p>
@@ -482,15 +637,53 @@
           .join("");
       }
 
-      // 4. ตารางกิจกรรม (Schedule)
+      // 4. ตารางกิจกรรม (Schedule) - พร้อม Skeleton แบบ Timeline
       function renderSchedule() {
         const pageContainer = document.getElementById("page-schedule");
-
-        // ล้างเนื้อหาเดิมออกก่อน (รวมถึงตารางเก่าถ้ามี)
-        // เก็บเฉพาะหัวข้อไว้
         pageContainer.innerHTML = `<h2 class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6">ตารางกิจกรรม</h2>`;
 
-        // Group ข้อมูลตามวัน
+        if (isLoading) {
+          // จำลอง Timeline 2 วัน
+          const skeletonHtml = Array(2)
+            .fill("")
+            .map(
+              () => `
+                    <div class="mb-8 animate-pulse">
+                        <div class="flex items-center mb-4">
+                            <div class="h-10 bg-gray-200 rounded-full w-32"></div>
+                            <div class="flex-1 h-px bg-gray-200 ml-4"></div>
+                        </div>
+                        <div class="space-y-3 ml-4 md:ml-8 border-l-2 border-gray-200 pl-6 py-2">
+                            ${Array(3)
+                              .fill("")
+                              .map(
+                                () => `
+                                <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center gap-2 md:gap-6 relative">
+                                    <div class="absolute -left-[33px] top-1/2 -translate-y-1/2 w-4 h-4 bg-gray-200 rounded-full border-4 border-white"></div>
+                                    <div class="h-6 bg-gray-200 rounded w-16 md:w-24"></div>
+                                    <div class="flex-1 space-y-2">
+                                        <div class="h-5 bg-gray-200 rounded w-1/2 md:w-1/3"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-1/3 md:w-1/4"></div>
+                                    </div>
+                                </div>
+                            `,
+                              )
+                              .join("")}
+                        </div>
+                    </div>
+                `,
+            )
+            .join("");
+
+          const wrap = document.createElement("div");
+          wrap.className = "space-y-8";
+          wrap.innerHTML = skeletonHtml;
+          pageContainer.appendChild(wrap);
+          return;
+        }
+
+        if (!appData) return;
+
         const groupedData = appData.schedule.reduce((acc, item) => {
           const day = item.date || "ไม่ระบุวัน";
           if (!acc[day]) acc[day] = [];
@@ -498,43 +691,37 @@
           return acc;
         }, {});
 
-        // สร้าง Container สำหรับรายการใหม่
         const listWrapper = document.createElement("div");
         listWrapper.className = "space-y-8";
 
-        // วนลูปสร้างหน้าตาตาม Day Group
         Object.keys(groupedData).forEach((day) => {
           const daySection = document.createElement("div");
           daySection.innerHTML = `
-            <div class="flex items-center mb-4">
-                <div class="bg-blue-800 text-white px-6 py-2 rounded-full font-bold shadow-md">
-                    <i class="far fa-calendar-check mr-2"></i> วันที่ ${day}
-                </div>
-                <div class="flex-1 h-px bg-blue-200 ml-4"></div>
-            </div>
-            <div class="space-y-3 ml-4 md:ml-8 border-l-2 border-blue-100 pl-6 py-2">
-                ${groupedData[day]
-                  .map(
-                    (item) => `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center gap-2 md:gap-6 hover:shadow-md transition relative">
-                        <div class="absolute -left-[33px] top-1/2 -translate-y-1/2 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-sm"></div>
-                        
-                        <div class="text-blue-600 font-bold text-lg md:w-24 flex-shrink-0">
-                            ${item.time}
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-800 text-white px-6 py-2 rounded-full font-bold shadow-md">
+                            <i class="far fa-calendar-check mr-2"></i> วันที่ ${day}
                         </div>
-                        
-                        <div class="flex-1">
-                            <h4 class="text-gray-800 font-bold text-lg">${item.activity}</h4>
-                            <p class="text-gray-500 text-sm">
-                                <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> ${item.location}
-                            </p>
-                        </div>
+                        <div class="flex-1 h-px bg-blue-200 ml-4"></div>
                     </div>
-                `,
-                  )
-                  .join("")}
-            </div>
-        `;
+                    <div class="space-y-3 ml-4 md:ml-8 border-l-2 border-blue-100 pl-6 py-2">
+                        ${groupedData[day]
+                          .map(
+                            (item) => `
+                            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center gap-2 md:gap-6 hover:shadow-md transition relative">
+                                <div class="absolute -left-[33px] top-1/2 -translate-y-1/2 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-sm"></div>
+                                <div class="text-blue-600 font-bold text-lg md:w-24 flex-shrink-0">${item.time}</div>
+                                <div class="flex-1">
+                                    <h4 class="text-gray-800 font-bold text-lg">${item.activity}</h4>
+                                    <p class="text-gray-500 text-sm">
+                                        <i class="fas fa-map-marker-alt text-red-400 mr-1"></i> ${item.location}
+                                    </p>
+                                </div>
+                            </div>
+                        `,
+                          )
+                          .join("")}
+                    </div>
+                `;
           listWrapper.appendChild(daySection);
         });
 
@@ -542,7 +729,37 @@
       }
 
       // 5. ผลการแข่งขัน (Score Board)
+      // 5. ผลการแข่งขัน (Score Board) - พร้อม Skeleton
       function renderScoreboard() {
+        const container = document.getElementById("scoreboard-container");
+
+        if (isLoading) {
+          // จำลองกล่องคะแนน 3 กล่อง
+          container.innerHTML = Array(3)
+            .fill("")
+            .map(
+              () => `
+                    <div class="bg-white p-6 rounded-lg shadow text-center border-t-4 border-gray-200 flex flex-col justify-between animate-pulse">
+                        <div class="flex flex-col items-center">
+                            <div class="h-5 bg-gray-200 rounded w-16 mb-3"></div>
+                            <div class="h-4 bg-gray-200 rounded w-32 mb-4"></div>
+                        </div>
+                        <div class="flex justify-between items-center w-full mt-2">
+                            <div class="h-6 bg-gray-200 rounded w-1/4"></div>
+                            <div class="px-4">
+                                <div class="h-10 bg-gray-200 rounded w-20"></div>
+                            </div>
+                            <div class="h-6 bg-gray-200 rounded w-1/4"></div>
+                        </div>
+                    </div>
+                `,
+            )
+            .join("");
+          return;
+        }
+
+        if (!appData) return;
+
         const filterScoreActivity = String(
           document.getElementById("filterScoreActivity").value,
         );
@@ -553,31 +770,29 @@
             String(s.activity) === filterScoreActivity,
         );
 
-        const container = document.getElementById("scoreboard-container");
         container.innerHTML = filteredData
           .map((s) => {
-            // แยกสกอร์ด้วย ":" ตามข้อกำหนด
             let scores = s.score.split(":").map((x) => x.trim());
             let score1 = scores[0] || "-";
             let score2 = scores[1] || "-";
 
             return `
-                <div class="bg-white p-6 rounded-lg shadow text-center border-t-4 border-blue-600 flex flex-col justify-between">
+                <div class="bg-white p-6 rounded-lg shadow text-center border-t-4 border-blue-600 flex flex-col justify-between transform transition duration-300 hover:shadow-lg">
                     <div>
-                        <h4 class="font-bold text-lg text-gray-600 text-sm mb-4">${s.activity}</h4>
                         <span class="inline-block bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded mb-3">รอบ: ${s.round}</span>
+                        <h4 class="text-gray-500 text-sm mb-4">${s.activity}</h4>
                     </div>
                     <div class="flex justify-between items-center w-full">
-                        <div class="flex-1">
-                            <p class="font-bold text-lg text-gray-800 truncate">${s.team1}</p>
+                        <div class="flex-1 overflow-hidden">
+                            <p class="font-bold text-lg text-gray-800 truncate" title="${s.team1}">${s.team1}</p>
                         </div>
-                        <div class="px-4">
-                            <div class="bg-blue-800 text-white font-black text-2xl px-4 py-2 rounded shadow-inner flex items-center gap-2 tracking-widest">
-                                <span>${score1}</span> <span class="text-blue-300 text-lg">:</span> <span>${score2}</span>
+                        <div class="px-2 md:px-4 shrink-0">
+                            <div class="bg-blue-800 text-white font-black text-xl md:text-2xl px-3 py-2 md:px-4 rounded shadow-inner flex items-center gap-1 md:gap-2 tracking-widest">
+                                <span>${score1}</span> <span class="text-blue-300 text-base md:text-lg">:</span> <span>${score2}</span>
                             </div>
                         </div>
-                        <div class="flex-1">
-                            <p class="font-bold text-lg text-gray-800 truncate">${s.team2}</p>
+                        <div class="flex-1 overflow-hidden">
+                            <p class="font-bold text-lg text-gray-800 truncate" title="${s.team2}">${s.team2}</p>
                         </div>
                     </div>
                 </div>
