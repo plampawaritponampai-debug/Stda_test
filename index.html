@@ -3,12 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ChE Sports Competition</title>
-    <link rel="preload" as="image" href="ใส่_URL_รูปภาพพื้นหลังที่นี่" />
-    <link rel="preload" as="image" href="ใส่_URL_รูปภาพพื้นหลังที่นี่" />
+    <title>Mor Din Deng Games Info</title>
+    <link rel="preload" as="image" href="https://i.postimg.cc/tg6Hx2Fm/DSC07648-(1).webp" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap");
       body {
@@ -30,54 +33,37 @@
     </style>
   </head>
   <body class="bg-gray-100 text-gray-800">
-    <div
-      id="welcome-screen"
-      style="
-        background-image: url(&quot;https://i.postimg.cc/9XdMMfsJ/DSC07648.webp&quot;);
-        background-size: cover;
-        background-position: center;
-      "
-      class="fixed inset-0 bg-blue-900 z-[60] flex flex-col justify-center items-center text-white transition-opacity duration-700 ease-in-out"
-    >
-      <div class="absolute inset-0 bg-black/60 z-[-1]"></div>
-      <div class="text-center p-8 max-w-lg w-full z-10">
-        <img
-          src="https://i.postimg.cc/9XdMMfsJ/DSC07648.webp"
-          alt="Logo"
-          class="h-32 w-auto mx-auto mb-6 drop-shadow-lg"
-        />
-        <h1
-          class="text-4xl md:text-5xl font-black mb-4 tracking-wide drop-shadow-md"
-        >
-          ChE Sports Competition
-        </h1>
-        <p
-          class="text-blue-100 text-lg md:text-xl mb-10 font-light drop-shadow-sm"
-        >
-          ระบบประชาสัมพันธ์และติดตามผลการแข่งขัน
-        </p>
+<div id="welcome-screen" 
+     style="background-image: url('https://i.postimg.cc/tg6Hx2Fm/DSC07648-(1).webp'); background-size: cover; background-position: center;" 
+     class="fixed inset-0 bg-blue-900 z-[60] flex flex-col justify-center md:justify-end items-center md:items-end md:pr-16 lg:pr-32 md:pb-20 text-white transition-opacity duration-700 ease-in-out">
+    
+    <div class="absolute inset-0 bg-black/50 z-[-1]"></div>
 
-        <div
-          class="flex flex-col md:flex-row gap-4 justify-center items-center w-full px-6 md:px-0"
-        >
-          <button
-            onclick="enterWebsite()"
-            class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-extrabold py-4 px-10 rounded-xl shadow-lg transform hover:-translate-y-1 transition-all duration-300 w-full md:w-auto text-lg flex items-center justify-center cursor-pointer order-1 md:order-1"
-          >
-            เข้าสู่เว็บไซต์ <i class="fas fa-arrow-right ml-3"></i>
-          </button>
+    <div class="text-center md:text-right p-0 max-w-lg w-full z-10">
+        
+        <img src="https://i.postimg.cc/8PcB43sN/R.png" alt="Logo" 
+             class="h-32 w-auto mx-auto md:ml-auto md:mr-0 mb-6 drop-shadow-lg">
+        
+        <h1 class="text-4xl md:text-7xl font-black mb-4 tracking-wide drop-shadow-md">Mor Din Dang Games</h1>
+        <p style="font-family: 'Charmonman', cursive;" class="text-blue-100 gap-4 text-xl md:text-2xl font-light drop-shadow-sm">Mor Din Dang Mor Than Games</p>
 
-          <button
-            onclick="
-              window.location.href = 'mailto:plampawaritponampai@gmail.com'
-            "
-            class="bg-white/20 hover:bg-white/30 text-white font-bold py-4 px-10 rounded-xl backdrop-blur-sm border border-white/30 shadow-lg transform hover:-translate-y-1 transition-all duration-300 w-full md:w-auto text-lg flex items-center justify-center cursor-pointer order-2 md:order-2"
-          >
-            <i class="fas fa-envelope mr-3"></i> ติดต่อเรา
-          </button>
+        <div class="flex flex-col md:flex-row gap-4 justify-center md:justify-end items-center w-full px-6 md:px-0 mt-16 md:mt-10">
+            
+            <button onclick="enterWebsite()" 
+                    class="bg-yellow-500 hover:bg-yellow-400 text-blue-900 font-extrabold py-4 px-10 rounded-xl shadow-lg transform hover:-translate-y-1 transition-all duration-300 w-full md:w-auto text-lg flex items-center justify-center cursor-pointer order-1 md:order-1">
+                เข้าสู่เว็บไซต์ <i class="fas fa-arrow-right ml-3"></i>
+            </button>
+
+            <button onclick="window.location.href='mailto:your-email@example.com'" 
+                    class="bg-white/20 hover:bg-white/30 text-white font-bold py-4 px-10 rounded-xl backdrop-blur-sm border border-white/30 shadow-lg transform hover:-translate-y-1 transition-all duration-300 w-full md:w-auto text-lg flex items-center justify-center cursor-pointer order-2 md:order-2">
+                <i class="fas fa-envelope mr-3"></i> ติดต่อเรา
+            </button>
+            
         </div>
-      </div>
     </div>
+</div>
+</div>
+</div>
 
     <div class="flex h-screen overflow-hidden">
       <aside
@@ -88,8 +74,8 @@
           class="p-6 border-b border-blue-700 flex justify-between items-center"
         >
           <h1 class="text-xl font-bold whitespace-nowrap">
-            ChE Sports <br />
-            Competition
+            Mor Din Deng <br />
+            Games  
             <i class="fas fa-trophy text-yellow-400 mr-2"></i>
           </h1>
           <button
@@ -170,8 +156,7 @@
             <i class="fas fa-bars text-2xl"></i>
           </button>
           <h1 class="text-lg font-bold text-blue-800 ml-4">
-            <i class="fas fa-trophy text-yellow-500 mr-1"></i> ChE Sports
-            Competition
+            <i class="fas fa-trophy text-yellow-500 mr-1"></i> Mor Din Dang Games
           </h1>
         </header>
 
@@ -186,71 +171,31 @@
           </div>
 
           <div id="page-students" class="page-section hidden">
-            <h2
-              class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6"
-            >
-              รายชื่อผู้เข้าร่วมกิจกรรม
-            </h2>
+            <div class="bg-white p-4 rounded-lg shadow mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">ค้นหา (ID, ชื่อ, นามสกุล)</label>
+                            <input type="text" id="searchStudent" oninput="renderStudents(true)" placeholder="พิมพ์ข้อความ..." class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">สถาบัน</label>
+                            <select id="filterInst" onchange="renderStudents(true)" class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">เพศ</label> <select id="filterGender" onchange="renderStudents(true)" class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">กิจกรรมที่เข้าร่วม</label>
+                            <select id="filterActivity" onchange="renderStudents(true)" class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+                        </div>
+                    </div>
 
-            <div
-              class="bg-white p-4 rounded-lg shadow mb-6 grid grid-cols-1 md:grid-cols-4 gap-4"
-            >
-              <div>
-                <label class="block text-sm text-gray-600 mb-1"
-                  >ค้นหา (ID, ชื่อ, นามสกุล)</label
-                >
-                <input
-                  type="text"
-                  id="searchStudent"
-                  oninput="renderStudents()"
-                  placeholder="พิมพ์ข้อความ..."
-                  class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label class="block text-sm text-gray-600 mb-1">สถาบัน</label>
-                <select
-                  id="filterInst"
-                  onchange="renderStudents()"
-                  class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></select>
-              </div>
-              <div>
-                <label class="block text-sm text-gray-600 mb-1">เพศ</label>
-                <select
-                  id="filterGender"
-                  onchange="renderStudents()"
-                  class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></select>
-              </div>
-              <div>
-                <label class="block text-sm text-gray-600 mb-1"
-                  >กิจกรรมที่เข้าร่วม</label
-                >
-                <select
-                  id="filterActivity"
-                  onchange="renderStudents()"
-                  class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                ></select>
-              </div>
-            </div>
+                    <div class="bg-white rounded-lg shadow overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <tbody id="student-table-body" class="text-gray-700 text-sm divide-y"></tbody>
+                        </table>
+                    </div>
 
-            <div class="bg-white rounded-lg shadow overflow-x-auto">
-              <table class="w-full whitespace-nowrap">
-                <thead class="bg-blue-50">
-                  <tr class="text-left text-blue-800 text-sm font-semibold">
-                    <th class="p-4 border-b w-24">ID</th>
-                    <th class="p-4 border-b">ชื่อ-นามสกุล</th>
-                    <th class="p-4 border-b">สถาบัน</th>
-                    <th class="p-4 border-b">กิจกรรม</th>
-                  </tr>
-                </thead>
-                <tbody
-                  id="student-table-body"
-                  class="text-gray-700 text-sm divide-y"
-                ></tbody>
-              </table>
-            </div>
+                    <div id="student-pagination" class="flex flex-wrap justify-center items-center py-4 space-x-1 mt-2"></div>
           </div>
 
           <div id="page-activities" class="page-section hidden">
@@ -370,7 +315,7 @@
       // ==========================================
       // ตัวแปรระบบ (State & Cache)
       // ==========================================
-      const CACHE_KEY = "sports_app_data_v2";
+      const CACHE_KEY = "sports_app_data_v1";
       let appData = null;
       let isLoading = true;
 
@@ -653,107 +598,153 @@
         }
       }
 
-      // 2. นักเรียน (Students) - ย้าย Icon ไปหน้าสุด และซ่อนคอลัมน์เพศ
-      function renderStudents() {
-        const container = document.getElementById("page-students");
+        // ==========================================
+        // 2. นักเรียน (Students) - DocumentFragment + Pagination
+        // ==========================================
 
-        if (isLoading) {
-          container.innerHTML = `<h2 class="text-2xl font-bold text-blue-800 border-l-4 border-blue-600 pl-3 mb-6">รายชื่อผู้เข้าร่วมกิจกรรม</h2>
-                      <div class="h-16 bg-gray-200 rounded w-full mb-6 animate-pulse"></div>
-                      <div class="h-64 bg-white rounded-lg shadow animate-pulse"></div>`;
-          return;
+        // ตัวแปรสำหรับ Pagination
+        let currentStudentPage = 1;
+        const studentsPerPage = 50; // หน้าละ 50 แถว
+
+        function renderStudents(resetPage = false) {
+            // ถ้ายูสเซอร์พิมพ์ค้นหา หรือเปลี่ยนตัวกรอง ให้กลับไปเริ่มหน้า 1 ใหม่
+            if (resetPage) currentStudentPage = 1; 
+
+            const container = document.getElementById('page-students');
+            const tbody = document.getElementById('student-table-body');
+            const paginationContainer = document.getElementById('student-pagination');
+            
+            if (isLoading) {
+                // Skeleton...
+                return;
+            }
+
+            // 1. ดึงค่า Filter
+            const searchText = document.getElementById('searchStudent').value.toLowerCase();
+            const filterInst = String(document.getElementById('filterInst').value);
+            const filterGender = String(document.getElementById('filterGender').value);
+            const filterActivity = String(document.getElementById('filterActivity').value);
+
+            // 2. กรองข้อมูลทั้งหมดก่อน
+            const filteredData = appData.students.filter(s => {
+                const matchSearch = String(s.id).toLowerCase().includes(searchText) || 
+                                    String(s.name).toLowerCase().includes(searchText) || 
+                                    String(s.surname).toLowerCase().includes(searchText);
+                const matchInst = filterInst === "" || String(s.institute) === filterInst;
+                const matchGender = filterGender === "" || String(s.gender) === filterGender;
+                const matchAct = filterActivity === "" || s.tags.includes(filterActivity);
+                
+                return matchSearch && matchInst && matchGender && matchAct;
+            });
+
+            // 3. คำนวณหน้า (Pagination Logic)
+            const totalPages = Math.ceil(filteredData.length / studentsPerPage);
+            if (currentStudentPage > totalPages && totalPages > 0) currentStudentPage = totalPages;
+
+            const startIdx = (currentStudentPage - 1) * studentsPerPage;
+            const endIdx = startIdx + studentsPerPage;
+            const paginatedData = filteredData.slice(startIdx, endIdx); // ตัดมาแค่ 50 แถว
+
+            // เคลียร์ตารางของเก่า
+            tbody.innerHTML = '';
+            
+            if(filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-500">ไม่พบข้อมูลที่ค้นหา</td></tr>`;
+                paginationContainer.innerHTML = '';
+                return;
+            }
+
+            // 4. สร้าง DocumentFragment แทนการใช้ innerHTML += เพื่อความเร็วสูงสุด
+            const fragment = document.createDocumentFragment();
+
+            paginatedData.forEach(s => {
+                // แถวที่ 1: ข้อมูลหลัก
+                const trMain = document.createElement('tr');
+                trMain.className = "cursor-pointer hover:bg-blue-50 transition border-b border-gray-100 select-none group";
+                trMain.onclick = () => toggleStudentDetails(s.id);
+                
+                trMain.innerHTML = `
+                    <td class="p-4 align-middle text-blue-600 font-semibold whitespace-nowrap">
+                        <i id="icon-${s.id}" class="fas fa-chevron-down text-xs mr-3 text-gray-400 group-hover:text-blue-500 transition-all duration-300"></i>
+                        ${s.id}
+                    </td>
+                    <td class="p-4 align-middle text-gray-800 font-medium">${s.name} ${s.surname}</td>
+                    <td class="p-4 align-middle text-gray-600">${s.institute}</td>
+                    <td class="p-4 align-middle">
+                        <div class="flex flex-wrap gap-1">
+                            ${s.tags.map(tag => `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full border border-blue-200">${tag}</span>`).join('')}
+                        </div>
+                    </td>
+                `;
+                fragment.appendChild(trMain);
+
+                // แถวที่ 2: รายละเอียด (Accordion)
+                const trDetail = document.createElement('tr');
+                trDetail.id = `details-${s.id}`;
+                trDetail.className = "hidden bg-gray-50/80";
+                
+                trDetail.innerHTML = `
+                    <td colspan="4" class="p-0 border-b border-gray-200">
+                        <div class="p-6 md:px-12 bg-blue-50/30 border-l-4 border-blue-400 m-2 rounded-r-lg shadow-inner">
+                            <h4 class="font-bold text-gray-700 mb-4 flex items-center">
+                                <i class="fas fa-info-circle text-blue-500 mr-2"></i> รายละเอียดกิจกรรมของ ${s.name}
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                ${s.tags.map(tag => {
+                                    const detailStr = appData.tagDetails && appData.tagDetails[tag] ? appData.tagDetails[tag] : "<span class='text-gray-400 italic'>ไม่มีรายละเอียดเพิ่มเติม</span>";
+                                    return `
+                                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                                        <div class="font-semibold text-blue-800 mb-2 border-b border-gray-100 pb-2 flex items-center">
+                                            <i class="fas fa-tag text-blue-400 mr-2 text-sm"></i> ${tag}
+                                        </div>
+                                        <div class="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">${detailStr}</div>
+                                    </div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </td>
+                `;
+                fragment.appendChild(trDetail);
+            });
+
+            // นำ Fragment ยัดเข้าตารางในครั้งเดียวจบ
+            tbody.appendChild(fragment);
+
+            // 5. เรนเดอร์ปุ่มเปลี่ยนหน้า
+            renderStudentPagination(totalPages);
         }
 
-        const searchText = document
-          .getElementById("searchStudent")
-          .value.toLowerCase();
-        const filterInst = String(document.getElementById("filterInst").value);
-        const filterGender = String(
-          document.getElementById("filterGender").value,
-        ); // ตัวกรองเพศยังอยู่และทำงานปกติ
-        const filterActivity = String(
-          document.getElementById("filterActivity").value,
-        );
+        // ฟังก์ชันสร้างปุ่ม Pagination
+        function renderStudentPagination(totalPages) {
+            const container = document.getElementById('student-pagination');
+            let html = '';
 
-        const filteredData = appData.students.filter((s) => {
-          const matchSearch =
-            String(s.id).toLowerCase().includes(searchText) ||
-            String(s.name).toLowerCase().includes(searchText) ||
-            String(s.surname).toLowerCase().includes(searchText);
-          const matchInst =
-            filterInst === "" || String(s.institute) === filterInst;
-          const matchGender =
-            filterGender === "" || String(s.gender) === filterGender;
-          const matchAct =
-            filterActivity === "" || s.tags.includes(filterActivity);
+            // ปุ่มก่อนหน้า
+            html += `<button onclick="changeStudentPage(${currentStudentPage - 1})" ${currentStudentPage === 1 ? 'disabled' : ''} class="px-3 py-1 rounded bg-white border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed mx-1 transition"><i class="fas fa-chevron-left text-xs"></i></button>`;
 
-          return matchSearch && matchInst && matchGender && matchAct;
-        });
+            // สร้างปุ่มเลขหน้า
+            for (let i = 1; i <= totalPages; i++) {
+                // หากมีหลายหน้ามาก ให้แสดงเฉพาะหน้าที่ใกล้เคียงเพื่อไม่ให้ปุ่มยาวเกินไป (โชว์ +- 2 หน้า)
+                if (i === 1 || i === totalPages || (i >= currentStudentPage - 2 && i <= currentStudentPage + 2)) {
+                    html += `<button onclick="changeStudentPage(${i})" class="px-3 py-1 mx-1 rounded border ${i === currentStudentPage ? 'bg-blue-600 text-white border-blue-600 font-bold' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'} transition">${i}</button>`;
+                } else if (i === currentStudentPage - 3 || i === currentStudentPage + 3) {
+                    html += `<span class="px-2 text-gray-500">...</span>`;
+                }
+            }
 
-        const tbody = document.getElementById("student-table-body");
-
-        tbody.innerHTML = filteredData
-          .map(
-            (s) => `
-                      <tr onclick="toggleStudentDetails('${s.id}')"
-                          class="cursor-pointer hover:bg-blue-50 transition border-b border-gray-100 select-none group">
-
-                          <td class="p-4 align-middle text-gray-600 font-semibold whitespace-nowrap">
-                              <i id="icon-${s.id}" class="fas fa-chevron-down text-xs mr-3 text-gray-400 group-hover:text-blue-500 transition-all duration-300"></i>
-                              ${s.id}
-                          </td>
-
-                          <td class="p-4 align-middle text-gray-800 font-medium">
-                              ${s.name} ${s.surname}
-                          </td>
-
-                          <td class="p-4 align-middle text-gray-600">${s.institute}</td>
-
-                          <td class="p-4 align-middle">
-                              <div class="flex flex-wrap gap-1">
-                                  ${s.tags.map((tag) => `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full border border-blue-200">${tag}</span>`).join("")}
-                              </div>
-                          </td>
-                      </tr>
-
-                      <tr id="details-${s.id}" class="hidden bg-gray-50/80">
-                          <td colspan="4" class="p-0 border-b border-gray-200">
-                              <div class="p-6 md:px-12 bg-blue-50/30 border-l-4 border-blue-400 m-2 rounded-r-lg shadow-inner">
-                                  <h4 class="font-bold text-gray-700 mb-4 flex items-center">
-                                      <i class="fas fa-info-circle text-blue-500 mr-2"></i> รายละเอียดของกิจกรรมที่เข้าร่วม
-                                  </h4>
-
-                                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                      ${s.tags
-                                        .map((tag) => {
-                                          const detailStr =
-                                            appData.tagDetails &&
-                                            appData.tagDetails[tag]
-                                              ? appData.tagDetails[tag]
-                                              : "<span class='text-gray-400 italic'>ไม่มีรายละเอียดเพิ่มเติม</span>";
-
-                                          return `
-                                          <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
-                                              <div class="font-semibold text-blue-800 mb-2 border-b border-gray-100 pb-2 flex items-center">
-                                                  <i class="fas fa-tag text-blue-400 mr-2 text-sm"></i> ${tag}
-                                              </div>
-                                              <div class="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed">${detailStr}</div>
-                                          </div>
-                                          `;
-                                        })
-                                        .join("")}
-                                  </div>
-                              </div>
-                          </td>
-                      </tr>
-                  `,
-          )
-          .join("");
-
-        if (filteredData.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-gray-500">ไม่พบข้อมูลที่ค้นหา</td></tr>`;
+            // ปุ่มถัดไป
+            html += `<button onclick="changeStudentPage(${currentStudentPage + 1})" ${currentStudentPage === totalPages ? 'disabled' : ''} class="px-3 py-1 rounded bg-white border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed mx-1 transition"><i class="fas fa-chevron-right text-xs"></i></button>`;
+            
+            container.innerHTML = html;
         }
-      }
+
+        // ฟังก์ชันเมื่อกดเปลี่ยนหน้า
+        function changeStudentPage(newPage) {
+            currentStudentPage = newPage;
+            renderStudents(); // เรนเดอร์ใหม่ (ไม่ต้องรีเซ็ตหน้า)
+            // เลื่อนจอกลับไปบนสุดของตารางเพื่อ UX ที่ดี
+            document.getElementById('page-students').scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
       // 3. กิจกรรม (Activities) - พร้อม Skeleton
       function renderActivities() {
@@ -994,37 +985,37 @@
         }
       }
 
-      // 6. Leaderboard - ป้องกัน Error จาก Cache เก่า
-        function renderLeaderboard() {
+      // ==========================================
+      // 6. Leaderboard - DocumentFragment
+      // ==========================================
+      function renderLeaderboard() 
+      {
             const tbody = document.getElementById('leaderboard-table-body');
             
             if (isLoading) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center animate-pulse text-gray-400">กำลังสรุปข้อมูลเหรียญ...</td></tr>`;
+                // Skeleton...
                 return;
             }
 
-            // [จุดแก้ปัญหา] เช็คก่อนว่ามี appData.leaderboard หรือไม่ ถ้าไม่มีให้ถือว่าเป็น Array ว่าง
             const leaderboardData = (appData && appData.leaderboard) ? appData.leaderboard : [];
+            tbody.innerHTML = ''; // เคลียร์ตารางเก่า
 
-            // ถ้าระบบโหลดเสร็จแล้วแต่ยังไม่มีข้อมูลจาก Sheet
             if (leaderboardData.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-gray-500">กำลังเตรียมข้อมูลเหรียญรางวัล...</td></tr>`;
                 return;
             }
 
-            // 1. เรียงลำดับข้อมูลตามเหรียญทอง (มากไปน้อย)
-            let sortedData = [...leaderboardData].sort((a, b) => Number(b.gold) - Number(a.gold));
-
-            // 2. Logic การจัดลำดับ
+            // ใช้ DocumentFragment เพื่อความเร็ว
+            const fragment = document.createDocumentFragment();
+            
+            let sortedData = leaderboardData; // ข้อมูลตรงจาก Sheet (เรียงมาแล้ว)
             let currentRank = 0;
             let lastGold = -1;
             
-            tbody.innerHTML = sortedData.map((item, index) => {
+            sortedData.forEach((item, index) => {
                 const goldCount = Number(item.gold);
                 
-                if (goldCount !== lastGold) {
-                    currentRank = index + 1;
-                }
+                if (goldCount !== lastGold) currentRank = index + 1;
                 lastGold = goldCount;
 
                 let rankDisplay = currentRank;
@@ -1032,20 +1023,22 @@
                 else if (currentRank === 2) rankDisplay = `<span class="bg-gray-300 text-gray-800 w-8 h-8 rounded-full flex items-center justify-center mx-auto font-bold shadow-sm">2</span>`;
                 else if (currentRank === 3) rankDisplay = `<span class="bg-orange-300 text-orange-900 w-8 h-8 rounded-full flex items-center justify-center mx-auto font-bold shadow-sm">3</span>`;
 
-                return `
-                    <tr class="hover:bg-blue-50/50 transition border-b border-gray-100">
-                        <td class="p-4 text-center font-bold text-lg text-gray-600">${rankDisplay}</td>
-                        <td class="p-4 font-bold text-blue-900 text-lg">${item.institute}</td>
-                        <td class="p-4 text-center text-xl font-bold text-yellow-600 bg-yellow-200/20">${item.gold}</td>
-                        <td class="p-4 text-center text-xl font-medium text-gray-500 bg-gray-50/30">${item.silver}</td>
-                        <td class="p-4 text-center text-xl font-medium text-orange-600 bg-gray-50/30">${item.bronze}</td>
-                        <td class="p-4 text-center text-xl font-black text-blue-800 bg-gray-50/30">${item.total}</td>
-                    </tr>
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-blue-50/50 transition border-b border-gray-100";
+                tr.innerHTML = `
+                    <td class="p-4 text-center font-bold text-lg text-gray-600">${rankDisplay}</td>
+                    <td class="p-4 font-bold text-blue-900 text-lg">${item.institute}</td>
+                    <td class="p-4 text-center text-xl font-bold text-yellow-600 bg-yellow-50/30">${item.gold}</td>
+                    <td class="p-4 text-center text-xl font-medium text-gray-500 bg-gray-50/30">${item.silver}</td>
+                    <td class="p-4 text-center text-xl font-medium text-orange-600 bg-orange-50/30">${item.bronze}</td>
+                    <td class="p-4 text-center text-xl font-black text-blue-800 bg-blue-50/20">${item.total}</td>
                 `;
-            }).join('');
-        }
+                fragment.appendChild(tr);
+            });
 
-      
+            // อัปเดตตาราง Leaderboard 
+            tbody.appendChild(fragment);
+        }
     </script>
   </body>
 </html>
